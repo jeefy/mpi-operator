@@ -51,9 +51,9 @@ echo "kubectl executor starting for $1"
 set -x
 POD_NAME=$1
 shift
-/usr/bin/kubectl exec ${POD_NAME} -- /bin/sh -c "sed '$d' /etc/hosts"
 /usr/bin/kubectl exec ${POD_NAME} -- /bin/sh -c "cat /entry/hosts >> /etc/hosts"
-/usr/bin/kubectl exec ${POD_NAME} -- /bin/sh -c "$*"`
+/usr/bin/kubectl exec ${POD_NAME} -- /bin/sh -c "$*"
+/usr/bin/kubectl exec ${POD_NAME} -- /bin/sh -c "echo $? > /tmp/exit"`
 
 const startupsh = `#!/bin/sh
 while true; do
@@ -61,13 +61,15 @@ while true; do
 		echo "Look at me. I'm the executor now.";
 		break
 	fi
+	if [ -f /tmp/exit ]; then
+		exit $(cat /tmp/exit);
+	fi
 	sleep 1
 done
 wget https://storage.googleapis.com/kubernetes-release/release/v1.12.2/bin/linux/amd64/kubectl && \
 mv kubectl /usr/bin/kubectl && \
 chmod +x /usr/bin/kubectl
 
-sed '$d' /etc/hosts
 cat /entry/hosts >> /etc/hosts
 
 echo "Time to do the thing: $*"

@@ -7,7 +7,6 @@ spec:
     apiVersion: batch/v1
     kind: Job
     spec:
-      backoffLimit: 6
       completions: 6
       parallelism: 6
       template:
