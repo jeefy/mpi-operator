@@ -1,0 +1,3 @@
+version: "1"
+domain: incubator.k8s.io
+repo: github.com/jeefy/mpi-operator
